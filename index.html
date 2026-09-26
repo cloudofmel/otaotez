@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Issue #21: El Cumpleaños del Héroe</title>
+    <!-- Fuentes divertidas y de cómic -->
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;700;900&family=Righteous&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Paleta de colores vibrantes estilo Cómic / Retro / Música */
+        :root {
+            --bg-color: #fdfbf7;
+            --red-marvel: #E23636;
+            --blue-superman: #005b9f;
+            --yellow-comic: #FFD500;
+            --purple-80s: #9b51e0;
+            --cyan-90s: #00f0ff;
+            --black: #1a1a1a;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--yellow-comic);
+            background-image: radial-gradient(var(--black) 15%, transparent 16%), radial-gradient(var(--black) 15%, transparent 16%);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            color: var(--black);
+            font-family: 'Nunito', sans-serif;
+            overflow-x: hidden;
+            overflow-y: hidden; 
+        }
+
+        /* =========================================
+           PANTALLA DE ANTESALA (INTRO)
+           ========================================= */
+        #intro-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: var(--blue-superman);
+            background-image: repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(0,0,0,0.1) 20px, rgba(0,0,0,0.1) 40px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            text-align: center;
+            padding: 2rem;
+            transition: transform 1s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        .intro-content h1 {
+            font-size: 6rem;
+            color: var(--yellow-comic);
+            text-shadow: 6px 6px 0px var(--black);
+            margin-bottom: 0;
+            line-height: 1;
+        }
+
+        .intro-phrase {
+            font-family: 'Righteous', cursive;
+            font-size: 2.2rem;
+            color: #fff;
+            text-shadow: 3px 3px 0px var(--black);
+            margin: 20px 0;
+            background: var(--red-marvel);
+            padding: 10px 20px;
+            border: 4px solid var(--black);
+            transform: rotate(-2deg);
+        }
+
+        #start-btn {
+            background-color: var(--cyan-90s);
+            color: var(--black);
+            font-family: 'Bangers', cursive;
+            font-size: 3rem;
+            padding: 15px 40px;
+            border: 5px solid var(--black);
+            box-shadow: 8px 8px 0px var(--black);
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.2s;
+            margin-top: 30px;
+            animation: pulse 1.5s infinite;
+        }
+
+        #start-btn:active {
+            transform: translate(8px, 8px);
+            box-shadow: 0px 0px 0px var(--black);
+        }
+
+        /* =========================================
+           BOTÓN DE AUDIO FLOTANTE
+           ========================================= */
+        #audio-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--red-marvel);
+            color: #fff;
+            font-family: 'Bangers', cursive;
+            font-size: 1.5rem;
+            padding: 10px 20px;
+            border: 4px solid var(--black);
+            border-radius: 50px;
+            box-shadow: 4px 4px 0px var(--black);
+            cursor: pointer;
+            z-index: 999;
+            display: none; /* Se muestra después de iniciar */
+            transition: all 0.2s;
+        }
+
+        #audio-control:active {
+            transform: translate(4px, 4px);
+            box-shadow: 0px 0px 0px var(--black);
+        }
+
+        /* =========================================
+           CONTENIDO PRINCIPAL Y PANELES
+           ========================================= */
+        #main-content {
+            opacity: 0;
+            transition: opacity 1s ease-in;
+        }
+
+        .container { padding: 2rem; max-width: 1000px; margin: 0 auto; }
+
+        .comic-panel {
+            background-color: var(--bg-color);
+            border: 6px solid var(--black);
+            box-shadow: 12px 12px 0px var(--black);
+            margin: 4rem auto;
+            border-radius: 10px;
+            padding: 3rem;
+            position: relative;
+            transform: rotate(-1deg);
+            transition: transform 0.3s ease;
+        }
+
+        .comic-panel:nth-child(even) { transform: rotate(1deg); background-color: #fff; }
+        .comic-panel:hover { transform: scale(1.02) rotate(0deg); z-index: 10; }
+
+        /* Estilo Musical añadido */
+        .music-panel {
+            background-color: #222 !important;
+            color: #fff;
+            border-color: var(--cyan-90s) !important;
+            background-image: linear-gradient(to right, #222 50%, #1a1a1a 50%);
+            background-size: 40px 100%;
+        }
+
+        .vinyl-record {
+            width: 150px; height: 150px;
+            background: radial-gradient(circle, #ff5722 15%, #111 16%, #222 25%, #111 35%, #222 45%, #111 55%, #333 100%);
+            border-radius: 50%;
+            border: 4px solid var(--black);
+            position: absolute;
+            top: -50px; right: 20px;
+            box-shadow: 5px 5px 0px var(--black);
+            animation: spin 4s linear infinite;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        /* Tipografías */
+        h1, h2, h3 { font-family: 'Bangers', cursive; letter-spacing: 2px; text-transform: uppercase; }
+        h2 { font-size: 3.5rem; color: var(--blue-superman); text-shadow: 3px 3px 0px var(--black); margin-bottom: 1.5rem; }
+        p { font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem; line-height: 1.6; }
+
+        .text-neon { font-family: 'Righteous', cursive; color: var(--cyan-90s); text-shadow: 3px 3px 0px var(--purple-80s); }
+
+        /* Fotografías / Imágenes */
+        .photo-frame {
+            border: 5px solid var(--black);
+            background: #fff;
+            padding: 10px 10px 30px 10px;
+            box-shadow: 6px 6px 0px var(--black);
+            display: inline-block;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .photo-frame img { width: 100%; max-width: 350px; height: auto; border: 2px solid var(--black); display: block; }
+        .photo-frame:hover { transform: scale(1.1) translateY(-10px) rotate(2deg) !important; z-index: 20; position: relative; }
+
+        /* Grid para grupos de fotos */
+        .photo-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-top: 2rem; }
+        .photo-grid .photo-frame { max-width: 200px; }
+        .photo-grid .photo-frame img { max-width: 100%; }
+        
+        /* Rotaciones aleatorias */
+        .rot-1 { transform: rotate(-4deg); }
+        .rot-2 { transform: rotate(3deg); }
+        .rot-3 { transform: rotate(-2deg); }
+        .rot-4 { transform: rotate(5deg); }
+
+        .sticker {
+            position: absolute; background: var(--cyan-90s); color: var(--black); font-family: 'Bangers', cursive;
+            padding: 10px 20px; font-size: 1.5rem; border: 3px solid var(--black); box-shadow: 4px 4px 0px var(--black);
+            border-radius: 50px; transform: rotate(-15deg); top: -20px; right: -20px; z-index: 5;
+        }
+
+        /* Continuará */
+        .to-be-continued {
+            font-family: 'Bangers', cursive;
+            font-size: 4.5rem;
+            color: var(--black);
+            text-align: center;
+            text-shadow: 4px 4px 0px #fff, -2px -2px 0px var(--cyan-90s);
+            margin: 4rem 0;
+            animation: pulse 1.5s infinite;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- AUDIO OCULTO -->
+    <audio id="bg-music" loop>
+        <source src="Heroes.mp3" type="audio/mpeg">
+        Tu navegador no soporta el elemento de audio.
+    </audio>
+
+    <!-- BOTÓN FLOTANTE PARA PAUSAR/REPRODUCIR -->
+    <button id="audio-control">🔊 PAUSAR</button>
+
+    <!-- ANTESALA -->
+    <div id="intro-screen">
+        <div class="intro-content">
+            <div class="sticker" style="position:relative; top:0; right:0; transform: rotate(5deg); margin-bottom: 20px; display:inline-block; background-color:var(--yellow-comic);">¡EDICIÓN ESPECIAL!</div>
+            <h1>ISSUE #21</h1>
+            <div class="intro-phrase">
+                Mitad Rockstar, Mitad Perro, algo Otaku, 100% tusiiii
+            </div>
+            <button id="start-btn">LEER CÓMIC ▶</button>
+        </div>
+    </div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div id="main-content">
+        <div class="container">
+
+            <!-- CAPÍTULO 1: EL ORIGEN -->
+            <div class="comic-panel">
+                <h2>Capítulo 1: Los Primeros Trazos</h2>
+                <p>Todo protagonista tiene una historia de origen. Algunos caen en un meteorito, otros son mordidos por insectos... y luego estás tú, que simplemente naciste con un nivel de "flow" que la ciencia aún no logra explicar.</p>
+                <p>Hace 21 años, el mundo vio la primera viñeta de esta leyenda. Y aunque en esta foto te veas pequeñito e inocente, ya se notaba que ibas a ser 100% tusiiii.</p>
+                
+                <div style="text-align: center;">
+                    <div class="photo-frame rot-1">
+                        <!-- FORMATO JPG -->
+                        <img src="8.jpg" alt="Él chiquito">
+                    </div>
+                </div>
+            </div>
+
+            <!-- CAPÍTULO 2: LA MÚSICA -->
+            <div class="comic-panel music-panel">
+                <div class="vinyl-record"></div>
+                <h2 class="text-neon">Capítulo 2: El Rockstar Interior</h2>
+                <p>¡El cómic cambia de ritmo! Todo buen superhéroe necesita un soundtrack épico. Mientras el mundo se conforma con lo de siempre, tú vives entre los riffs de los 80s, la distorsión de los 90s y la música en su estado más puro.</p>
+                <p>Tu superpoder no es volar ni leer mentes, es saber exactamente qué canción poner para que cualquier momento se sienta como la escena final de una película. Tu vida es un mixtape infinito.</p>
+            </div>
+
+            <!-- CAPÍTULO 3: RANDOMS & OTAKU -->
+            <div class="comic-panel" style="background-color: #ffb8d1;">
+                <h2 style="color: #d60060;">Capítulo 3: Momentos Random y Modo Otaku</h2>
+                <p>Pero oye, nadie es un rockstar las 24 horas. El multiverso también tiene espacio para esos momentos donde sale la mitad perro, lo otaku y las locuras random que nos hacen reír hasta llorar.</p>
+                
+                <div style="text-align: center;">
+                    <div class="photo-frame rot-2">
+                        <!-- FORMATO JPG -->
+                        <img src="32.jpg" alt="Momento random 1">
+                    </div>
+                    <div class="photo-frame rot-3">
+                        <!-- FORMATO PNG -->
+                        <img src="9.png" alt="Momento random 2">
+                    </div>
+                </div>
+            </div>
+
+            <!-- CAPÍTULO 4: LA BANDA Y EL CREW -->
+            <div class="comic-panel">
+                <h2 style="color: var(--red-marvel);">Capítulo 4: El Crew Inseparable</h2>
+                <p>Aquí es donde entramos nosotros. Los crossovers más épicos no ocurren solo en Marvel. Desde los orígenes del grupo hasta cada ensayo, fiesta y locura, la banda no estaría completa sin su integrante estrella.</p>
+                
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <p style="font-family: 'Bangers', cursive; font-size: 1.5rem; color: var(--purple-80s);">Dónde empezó todo:</p>
+                    <div class="photo-frame rot-4">
+                        <!-- FORMATO JPG -->
+                        <img src="1.jpg" alt="Orígenes del grupo">
+                    </div>
+                </div>
+
+                <p style="font-family: 'Bangers', cursive; font-size: 1.5rem; color: var(--blue-superman); text-align: center;">Nuestra Liga de la Justicia:</p>
+                <div class="photo-grid">
+                    <!-- FORMATO JPG -->
+                    <div class="photo-frame rot-1"><img src="31.jpg" alt="Grupo"></div>
+                    <div class="photo-frame rot-3"><img src="33.jpg" alt="Grupo"></div>
+                    <div class="photo-frame rot-2"><img src="4.jpg" alt="Grupo"></div>
+                    <div class="photo-frame rot-4"><img src="5.jpg" alt="Grupo"></div>
+                    <div class="photo-frame rot-1"><img src="7.jpg" alt="Grupo"></div>
+                    <div class="photo-frame rot-3"><img src="10.jpg" alt="Grupo"></div>
+                    <div class="photo-frame rot-2"><img src="11.jpg" alt="Grupo"></div>
+                    <div class="photo-frame rot-4"><img src="12.jpg" alt="Grupo"></div>
+                </div>
+            </div>
+
+            <!-- CAPÍTULO 5: FINAL FELIZ CUMPLEAÑOS -->
+            <div class="comic-panel" style="background-color: var(--blue-superman); color: white; text-align: center; border-color: var(--red-marvel);">
+                <div class="sticker" style="background-color: var(--yellow-comic); color: var(--black); padding: 15px 30px; font-size: 2rem;">¡LEVEL UP!</div>
+                <h1 style="font-size: 6rem; color: var(--yellow-comic); text-shadow: 4px 4px 0px var(--black), -2px -2px 0px var(--red-marvel);">¡FELICES 21!</h1>
+                <p style="font-size: 1.8rem; text-shadow: 2px 2px 0px var(--black);">Has desbloqueado el Nivel 21. El juego apenas comienza.</p>
+                <p style="font-size: 1.3rem; font-weight: normal; margin-top: 1.5rem;">Que sigan los éxitos con la banda, que los memes nunca falten en el chat, que la música nunca deje de sonar y que sigas siendo ese bro único que todos queremos.</p>
+                
+                <p style="color: var(--cyan-90s); font-size: 2.5rem; font-family: 'Bangers', cursive; margin-top: 3rem; text-shadow: 3px 3px 0px var(--black);">¡A CELEBRAR COMO SE DEBE!</p>
+            </div>
+
+            <!-- IMAGEN DE NINTENDO FINAL -->
+            <div style="text-align: center; margin: 4rem 0 2rem 0;">
+                <div class="photo-frame rot-1" style="max-width: 600px; padding: 15px; border-width: 8px; border-color: var(--red-marvel);">
+                    <!-- FORMATO PNG -->
+                    <img src="nintendo.png" alt="Nivel Nintendo" style="max-width: 100%;">
+                </div>
+            </div>
+
+            <!-- FINAL CONTINUARÁ -->
+            <div class="to-be-continued">
+                ¿CONTINUARÁ...? <br>
+                <span style="font-size: 2rem; color: var(--black); text-shadow: none; font-family: 'Nunito', sans-serif; font-weight: 900;">(Obvio que sí)</span>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- SCRIPT PARA INTERACTIVIDAD -->
+    <script>
+        const audio = document.getElementById('bg-music');
+        const audioControl = document.getElementById('audio-control');
+
+        // Función del botón inicial
+        document.getElementById('start-btn').addEventListener('click', function() {
+            audio.volume = 0.5;
+            audio.play();
+
+            const introScreen = document.getElementById('intro-screen');
+            introScreen.style.transform = 'translateY(-100vh)';
+            document.body.style.overflowY = 'auto';
+
+            // Mostrar el botón de pausa
+            audioControl.style.display = 'block';
+
+            setTimeout(() => {
+                const mainContent = document.getElementById('main-content');
+                mainContent.style.opacity = '1';
+                introScreen.style.display = 'none';
+            }, 800); 
+        });
+
+        // Función para pausar/reproducir música
+        audioControl.addEventListener('click', function() {
+            if (audio.paused) {
+                audio.play();
+                audioControl.innerHTML = '🔊 PAUSAR';
+                audioControl.style.backgroundColor = 'var(--red-marvel)';
+            } else {
+                audio.pause();
+                audioControl.innerHTML = '🔇 REPRODUCIR';
+                audioControl.style.backgroundColor = 'var(--purple-80s)';
+            }
+        });
+    </script>
+</body>
+</html>
