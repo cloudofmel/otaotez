@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Origen | Soundtrack de una Leyenda</title>
+    <!-- Fuentes Cinematográficas y Elegantes -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Variables de color - Estilo Dark/Vintage */
+        :root {
+            --bg-color: #070707;
+            --text-main: #e0e0e0;
+            --text-muted: #888888;
+            --accent-gold: #b39b59;
+            --accent-red: #7a1515;
+            --border-dark: #222222;
+        }
+
+        /* Reseteo y Estilos Base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, .cinematic-text {
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        /* Secciones Narrativas */
+        .story-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 4rem 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .story-content {
+            max-width: 800px;
+            margin: 0 auto;
+            z-index: 2;
+        }
+
+        /* Tipografía específica */
+        .chapter-num {
+            color: var(--accent-gold);
+            font-size: 0.9rem;
+            letter-spacing: 5px;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: #ffffff;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.8);
+        }
+
+        p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            font-weight: 300;
+        }
+
+        /* Efectos de Scroll (JavaScript controlará esto) */
+        .fade-element {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .fade-element.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Componentes Visuales */
+        .hero-title {
+            font-size: 4vw;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #fff, var(--text-muted));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2.5rem; }
+            h2 { font-size: 2rem; }
+        }
+
+        /* Galería Sobria para Memes de Perros */
+        .dog-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+            width: 100%;
+        }
+
+        .dog-frame {
+            border: 1px solid var(--border-dark);
+            padding: 10px;
+            background: #111;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .dog-frame img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            /* Filtro para que los memes se vean serios y artísticos */
+            filter: grayscale(100%) contrast(1.2) brightness(0.8);
+            transition: filter 0.5s ease;
+        }
+
+        .dog-frame:hover {
+            border-color: var(--accent-gold);
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+
+        .dog-frame:hover img {
+            filter: grayscale(0%) contrast(1.1) brightness(1);
+        }
+
+        .dog-caption {
+            font-family: 'Cinzel', serif;
+            font-size: 0.8rem;
+            margin-top: 10px;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+
+        /* Separador visual */
+        .separator {
+            width: 1px;
+            height: 80px;
+            background: linear-gradient(to bottom, transparent, var(--accent-gold), transparent);
+            margin: 2rem auto;
+        }
+
+        /* Final / Continuará */
+        .outro-text {
+            font-size: 3rem;
+            color: #fff;
+            letter-spacing: 8px;
+            text-shadow: 0 0 20px rgba(255,255,255,0.2);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            color: var(--accent-gold);
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); }
+            40% { transform: translateY(-15px) translateX(-50%); }
+            60% { transform: translateY(-7px) translateX(-50%); }
+        }
+
+        /* Efecto de Ruido / Grano de película de fondo */
+        .noise {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none;
+            z-index: 100;
+            opacity: 0.03;
+            background: url('https://www.transparenttextures.com/patterns/stardust.png');
+        }
+    </style>
+</head>
+<body>
+
+    <div class="noise"></div>
+
+    <!-- PRÓLOGO -->
+    <section class="story-section">
+        <div class="story-content fade-element">
+            <span class="chapter-num">PRÓLOGO</span>
+            <h1 class="hero-title">EL ORIGEN</h1>
+            <p>Todo mito tiene un punto de partida. Una chispa en la oscuridad.</p>
+            <p>No viniste de Krypton ni fuiste picado por una araña radiactiva. Tu historia se forjó entre el ruido, la distorsión y los ecos de una época que definió el rock.</p>
+        </div>
+        <div class="scroll-indicator">Baja para continuar</div>
+    </section>
+
+    <!-- CAPÍTULO 1: LA MÚSICA -->
+    <section class="story-section" style="background: linear-gradient(to bottom, #070707, #0d0d0d);">
+        <div class="story-content fade-element">
+            <span class="chapter-num">CAPÍTULO I</span>
+            <h2>Frecuencias de una Era</h2>
+            <div class="separator"></div>
+            <p>El acero se templa con fuego; tú te templaste con los vinilos de los 80s y la rebeldía de los 90s. Eres el frontman de tu propia historia.</p>
+            <p>Mientras el mundo busca héroes de capa, tú elegiste una guitarra. Elegiste que el arte, los cómics y los solos estridentes fueran tu brújula.</p>
+        </div>
+    </section>
+
+    <!-- CAPÍTULO 2: LA ALIANZA -->
+    <section class="story-section">
+        <div class="story-content fade-element">
+            <span class="chapter-num">CAPÍTULO II</span>
+            <h2>La Alianza</h2>
+            <div class="separator"></div>
+            <p>Pero incluso los que llevan el emblema de la "S" en el pecho descubren que no pueden salvar el mundo solos.</p>
+            <p>En el camino, se cruzan destinos. Así aparecimos nosotros. Como en las mejores páginas de un cómic, los personajes secundarios terminaron formando una banda irrompible. Una liga que no requiere superpoderes, solo lealtad.</p>
+        </div>
+    </section>
+
+    <!-- CAPÍTULO 3: LOS MEMES (Estilo Galería de Arte) -->
+    <section class="story-section" style="background-color: #090909;">
+        <div class="story-content fade-element">
+            <span class="chapter-num">CAPÍTULO III</span>
+            <h2>Guardianes del Backstage</h2>
+            <p>Todo caballero oscuro tiene su lado impredecible. Ese humor fino y absurdo que solo nosotros entendemos.</p>
+            
+            <div class="dog-gallery">
+                <!-- Imagen 1: Puedes cambiar el 'src' por el link de tu meme -->
+                <div class="dog-frame fade-element">
+                    <img src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?q=80&w=600&auto=format&fit=crop" alt="Perro 1">
+                    <div class="dog-caption">EXHIBICIÓN A: LA MIRADA JUZGADORA</div>
+                </div>
+                <!-- Imagen 2: Puedes cambiar el 'src' por el link de tu meme -->
+                <div class="dog-frame fade-element" style="transition-delay: 0.2s;">
+                    <img src="https://images.unsplash.com/photo-1517423568366-8b83523034fd?q=80&w=600&auto=format&fit=crop" alt="Perro 2">
+                    <div class="dog-caption">EXHIBICIÓN B: ESTADO MENTAL POST-ENSAYO</div>
+                </div>
+                <!-- Imagen 3: Puedes cambiar el 'src' por el link de tu meme -->
+                <div class="dog-frame fade-element" style="transition-delay: 0.4s;">
+                    <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?q=80&w=600&auto=format&fit=crop" alt="Perro 3">
+                    <div class="dog-caption">EXHIBICIÓN C: EL VERDADERO ROCKSTAR</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CAPÍTULO 4: EL MENSAJE -->
+    <section class="story-section" style="background: linear-gradient(to top, #000000, #090909);">
+        <div class="story-content fade-element">
+            <span class="chapter-num">EPÍLOGO</span>
+            <h2>Feliz Cumpleaños</h2>
+            <div class="separator"></div>
+            <p>Hoy celebramos un año más de esta saga.</p>
+            <p>Que la banda suene más fuerte que nunca. Que cada meta que te propongas sea un estadio lleno, y que nunca pierdas esa esencia oscura, creativa y auténtica que te hace ser quien eres.</p>
+            <p style="color: var(--accent-gold); margin-top: 2rem;">Esperamos estar siempre en primera fila para verte triunfar.</p>
+        </div>
+    </section>
+
+    <!-- EL FINAL -->
+    <section class="story-section" style="min-height: 50vh;">
+        <div class="story-content fade-element">
+            <h1 class="outro-text cinematic-text">¿Continuará...?</h1>
+        </div>
+    </section>
+
+    <!-- Script para animar los elementos al hacer scroll -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.2
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        // Opcional: dejar de observar si solo quieres que la animación ocurra una vez
+                        // observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            const fadeElements = document.querySelectorAll('.fade-element');
+            fadeElements.forEach(el => observer.observe(el));
+        });
+    </script>
+</body>
+</html>
